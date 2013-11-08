@@ -1,22 +1,20 @@
 {% extends "base.html" %}
 
 {% block body %}
-    <h4>List Pieces</h4>
+    <h4>List Phrases</h4>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Composer (in Source)</th>
-                <th>Performance Forces</th>
+                <th>Position</th>
+                <th>Text</th>
             </tr>
         </thead>
         <tbody>
-            {% for piece in content %}
+            {% for phrase in content %}
             <tr>
-                <td><a href="{{ piece.url }}">{{ piece.title }}</a></td>
-                <td>{{ piece.composer_src }}</td>
-                <td>{{ piece.forces }}</td>
+                <td>{{ phrase.phrase_num }}</td>
+                <td><a href="{{ phrase.url }}">{{ phrase.phrase_text }}</a></td>
             </tr>
             {% endfor %}
         </tbody>
