@@ -1005,6 +1005,21 @@ Edit your `base.html` file to include these files like this:
 
 Note that we've added a little image of Goudimel in our `static/img` folder. You should do the same.
 
+Just to round it out, let's update our `index.html` template to allow users to click links to browse our site:
+
+```
+{% extends "base.html" %}
+
+{% block body %}
+    <h1>Explore our site</h1>
+    <ul>
+        <li><a href="/book">Books</a></li>
+        <li><a href="/piece">Pieces</a></li>
+        <li><a href="/phrase">Phrases</a></li>
+    </ul>
+{% endblock %}
+```
+
 Visiting the website in a browser will now display our base template with the data from each of the other templates in the body region. Now it's starting to come together.
 
 To save space and time writing this section, I won't go through every step of the customization and design of the pages. You now have the basics for inserting data into a template, so you can build the list and detail views on your own. If you get stuck you should refer to the templates in the GitHub repository for this tutorial for any further changes and modifications. You will need to switch to the "Tutorial-Part1" branch to see it at this point in time.
