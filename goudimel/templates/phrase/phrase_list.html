@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <h4>List Pieces</h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Composer (in Source)</th>
+                <th>Performance Forces</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for piece in content %}
+            <tr>
+                <td><a href="{{ piece.url }}">{{ piece.title }}</a></td>
+                <td>{{ piece.composer_src }}</td>
+                <td>{{ piece.forces }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <h4>List Books</h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Publisher</th>
+                <th>Published</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in content %}
+            <tr>
+                <td><a href="{{ book.url }}">{{ book.title }}</a></td>
+                <td>{{ book.publisher }}</td>
+                <td>{{ book.published }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
