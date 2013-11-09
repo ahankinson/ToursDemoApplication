@@ -9,6 +9,7 @@
                 <th>Title</th>
                 <th>Composer (in Source)</th>
                 <th>Performance Forces</th>
+                <th>Book</th>
             </tr>
         </thead>
         <tbody>
@@ -17,6 +18,7 @@
                 <td><a href="{{ piece.url }}">{{ piece.title }}</a></td>
                 <td>{{ piece.composer_src }}</td>
                 <td>{{ piece.forces }}</td>
+                <td>{{ piece.book_id.title }}</td>
             </tr>
             {% endfor %}
         </tbody>
