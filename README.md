@@ -291,7 +291,7 @@ class Book(models.Model):
     rism_id = models.CharField(max_length=16, blank=True, null=True)
     cesr_id = models.CharField(max_length=16, blank=True, null=True)
     remarks = models.CharField(max_length=128, blank=True, null=True)
-    num_pages = models.CharField(max_length=16, blank=True, null=True)
+    num_pages = models.IntegerField(blank=True, null=True)
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -882,7 +882,7 @@ You should get the following response:
 
 ```
 ~|⇒ curl -XGET -H "Accept: application/json" http://localhost:8000/book/
-[{"url": "http://localhost:8000/book/1/", "title": "Book 1", "publisher": "Someone", "published": "1501-01-10", "rism_id": "1", "cesr_id": "2", "remarks": "3", "num_pages": "100", "created": "2013-11-08T00:29:36.956Z", "updated": "2013-11-08T00:29:36.956Z"}, {"url": "http://localhost:8000/book/2/", "title": "Book 2", "publisher": "Someone", "published": "1501-01-10", "rism_id": "1", "cesr_id": "1", "remarks": "", "num_pages": "", "created": "2013-11-08T00:30:41.809Z", "updated": "2013-11-08T00:30:41.809Z"}]
+[{"url": "http://localhost:8000/book/1/", "title": "Book 1", "publisher": "Someone", "published": "1501-01-10", "rism_id": "1", "cesr_id": "2", "remarks": "3", "num_pages": 100, "created": "2013-11-08T00:29:36.956Z", "updated": "2013-11-08T00:29:36.956Z"}, {"url": "http://localhost:8000/book/2/", "title": "Book 2", "publisher": "Someone", "published": "1501-01-10", "rism_id": "1", "cesr_id": "1", "remarks": "", "num_pages": "", "created": "2013-11-08T00:30:41.809Z", "updated": "2013-11-08T00:30:41.809Z"}]
 ```
 
 Just for fun, let's change our Accept header to text/html and try again:
