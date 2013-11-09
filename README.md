@@ -1275,8 +1275,145 @@ Re-build your Solr instance and check to make sure it is working in Tomcat.
 
 ## Automatically Indexing Content
 
-The next thing we need to do is to start adding content to the Solr instance from our Django application. We can do this in two ways. The first is to have a separate "indexing" script that periodically runs and copies our data from Django into Solr.
+The next thing we need to do is to start adding content to the Solr instance from our Django application. We can do this in two ways. The first is to have a separate "indexing" script that periodically runs and copies our data from Django into Solr. This is simple, but it requires manual intervention whenever data changes in our Django application.
 
-## Querying
+A better solution is to automatically index content whenever a record is saved. To do this we will make use of Django's "Signals" feature.
+
+### Signals
+
+Django signals are an implementation of the 'notification' design pattern. This design pattern allows us to execute multiple actions when a single message, or signal, is triggered.
+
+When a Django model instance is saved, either when it is created or when it is edited, it will send a notification out. This notification is picked up by any methods that are registered to receive this notification.
+
+This is useful when we want to trigger many actions (like indexing in Solr) when a record is saved, but we don't want to override the `save()` method on that model.
+
+### SolrPy
+
+SolrPy is the Python module we will be using to get Django to talk to Solr. There are other, more complex modules but I find they obscure a lot of the work that Solr does in a way that makes it difficult to understand how to build a custom search system.
+
+The first thing we need to do is create a setting in our Django application where we can store the address of our Solr server. Open up `settings.py` and add the following line:
+
+`SOLR_SERVER = "http://localhost:8080/goudimel-solr/"`
+
+That's really all we need to do for now. We will use this setting when we need to work with Solr in our indexing and querying methods.
+
+### Indexing Content
+
+Open up your `Book` model file (`models/book.py`). To start using Signals we will need to import some new methods at the top.
+
+Import the following:
+
+```
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+```
+
+Now create a new function in this file. It should be its own function, and not part of the `Book` class.
+
+```
+@receiver(post_save, sender=Book)
+def solr_index(sender, instance, created, **kwargs):
+    import uuid
+    from django.conf import settings
+    import solr
+
+    solrconn = solr.SolrConnection(settings.SOLR_SERVER)
+    record = solrconn.query("type:goudimel_book title:{0}".format(instance.title))
+    if record:
+        # the record already exists, so we'll remove it first.
+        solrconn.delete(record.results[0]['id'])
+
+    book = instance
+    d = {
+        'type': 'goudimel_book',
+        'id': str(uuid.uuid4()),
+        'book_s_title': book.title,
+        'book_s_publisher': book.publisher,
+        'book_d_published': book.published,
+        'book_s_rism_id': book.rism_id,
+        'book_s_cesr_id': book.cesr_id,
+        'book_s_remarks': book.remarks,
+        'book_i_num_pages': book.num_pages,
+        'book_d_created': book.created,
+        'book_d_updated': book.updated
+    }
+    solrconn.add(**d)
+    solrconn.commit()
+```
+
+Let's look at this method a bit more in-depth. The first line of this function is called a Python "decorator". Decorators are handy to know about, but for now it's enough to know that this function is what "registers" the following function for notifications. Notice that the `@receiver` takes two arguments: the notification it will listen for (`post_save`), and the specific model that it listens for notifications from (`Book`).
+
+This means that after a Book record has been saved, this `solr_index` function will be called.
+
+The `solr_index` function takes a number of parameters. The first is a reference to the sender, in this case the Book model. The second is a reference to the specific `instance,` or record that was saved. The other arguments are optional and can be ignored for the moment.
+
+The import lines are fairly self-explanatory. Notice that we are importing the `uuid` module to create universally unique IDs for our records.
+
+`solrconn` is the call that establishes a connection to our Solr server. We can use the setting from our `settings.py` that we created earlier.
+
+The next few lines will look for an existing record in our Solr system. If we are creating a new record, chances are it will not exist. However, if we are updating an older record the easiest way to deal with it is to delete the old record and then re-add a new one.
+
+Finally, we index the content. We create a key/value dictionary that contains the Solr field that we want to push content into, and the content from our book instance that is being saved as the value. Notice that the keys in our dictionary match the `dynamicField` pattern that we established in our Solr schema.
+
+This is concluded by calling `add` to our Solr server to add the document to the Solr server. It uses a Python idiom that you may not be familiar with:
+
+`solrconn.add(**d)`
+
+What this call does is expands the keys and values from our dictionary into arguments for the function call. So:
+
+`d = {'book_s_title': "My great book title", "book_d_published": "1501-01-01"}`
+
+becomes:
+
+`solrconn.add(book_s_title="My great book title", book_d_published="1501-01-01")`
+
+I find it a very handy thing to use.
+
+Now that our indexing script is in place, let's test it out. Open a web browser and navigate to the Django admin interface. Add a new book.
+
+Once you have added it, navigate to your Solr admin interface. You will see a field, "Make a Query" that is filled out with the Solr wildcard search (`*:*`). Click the search button.
+
+You should see something like this:
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+<lst name="responseHeader">
+  <int name="status">0</int>
+  <int name="QTime">0</int>
+  <lst name="params">
+    <str name="q">*:*</str>
+    <str name="version">2.2</str>
+    <str name="start">0</str>
+    <str name="rows">10</str>
+    <str name="indent">on</str>
+  </lst>
+</lst>
+<result name="response" numFound="1" start="0">
+  <doc>
+    <date name="book_d_created">2013-11-09T15:52:08.224Z</date>
+    <date name="book_d_published">1501-01-10T00:00:00Z</date>
+    <date name="book_d_updated">2013-11-09T15:52:08.225Z</date>
+    <int name="book_i_num_pages">100</int>
+    <str name="book_s_cesr_id">4335232445</str>
+    <str name="book_s_publisher">Andrew Hankinson</str>
+    <str name="book_s_remarks">It's a great book</str>
+    <str name="book_s_rism_id">1234566</str>
+    <str name="book_s_title">My Great Book</str>
+    <str name="id">1370bf18-9754-4615-8fd2-f759563036e9</str>
+    <str name="type">goudimel_book</str>
+  </doc>
+</result>
+</response>
+```
+
+Success! To get your previously-added books into Solr you just need to go in and re-save them without changing anything. They will be automatically indexed as you save.
+
+Proceed to do the same thing for your other two models. Remember that you *will* need to change the `type` field to match the record type.
+
+You can see the state of this tutorial with the completed save signals in the "Tutorial-Part2" branch on GitHub.
+
+# Using Solr for Searching
 
 
