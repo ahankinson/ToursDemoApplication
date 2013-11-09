@@ -1,4 +1,7 @@
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
 
 class Piece(models.Model):
     class Meta:
@@ -14,3 +17,40 @@ class Piece(models.Model):
 
     def __unicode__(self):
         return u"{0}".format(self.title)
+
+    @property
+    def composer_name(self):
+        name = self.composer_src.split(",")
+        if len(name) > 1:
+            return u"{0} {1}".format(name[1], name[0])
+        else:
+            return u"{0}".format(self.composer_src)
+
+
+@receiver(post_save, sender=Piece)
+def solr_index(sender, instance, created, **kwargs):
+    import uuid
+    from django.conf import settings
+    import solr
+
+    solrconn = solr.SolrConnection(settings.SOLR_SERVER)
+    record = solrconn.query("type:goudimel_piece book_id:{0} title:{1}".format(instance.book_id.id, instance.title))
+    if record:
+        # the record already exists, so we'll remove it first.
+        solrconn.delete(record.results[0]['id'])
+
+    piece = instance
+    d = {
+        'type': 'goudimel_piece',
+        'id': str(uuid.uuid4()),
+        'piece_s_title': piece.title,
+        'piece_s_composer_src': piece.composer_src,
+        'piece_s_forces': piece.forces,
+        'piece_s_print_concordances': piece.print_concordances,
+        'piece_s_ms_concordances': piece.ms_concordances,
+        'piece_s_pdf_link': piece.pdf_link,
+        'piece_d_created': piece.created,
+        'piece_d_updated': piece.updated
+    }
+    solrconn.add(**d)
+    solrconn.commit()
