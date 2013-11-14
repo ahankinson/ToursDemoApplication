@@ -4,6 +4,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from goudimel.views.main import BookList, BookDetail
 from goudimel.views.main import PieceList, PieceDetail
 from goudimel.views.main import PhraseList, PhraseDetail
+from goudimel.views.search import SearchView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -22,6 +23,7 @@ urlpatterns += format_suffix_patterns(
     url(r'^piece/(?P<pk>[0-9]+)/$', PieceDetail.as_view(), name="piece-detail"),
     url(r'^phrase/$', PhraseList.as_view(), name="phrases-list"),
     url(r'^phrase/(?P<pk>[0-9]+)/$', PhraseDetail.as_view(), name="phrase-detail"),
+    url(r'^search/$', SearchView.as_view(), name="search-view"),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

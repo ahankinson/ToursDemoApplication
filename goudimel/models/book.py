@@ -1,6 +1,6 @@
 from django.db import models
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 
 
 class Book(models.Model):
@@ -28,7 +28,7 @@ def solr_index(sender, instance, created, **kwargs):
     import solr
 
     solrconn = solr.SolrConnection(settings.SOLR_SERVER)
-    record = solrconn.query("type:goudimel_book title:{0}".format(instance.title))
+    record = solrconn.query("type:goudimel_book book_i_id:{0}".format(instance.id))
     if record:
         # the record already exists, so we'll remove it first.
         solrconn.delete(record.results[0]['id'])
@@ -37,6 +37,7 @@ def solr_index(sender, instance, created, **kwargs):
     d = {
         'type': 'goudimel_book',
         'id': str(uuid.uuid4()),
+        'book_i_id': book.id,
         'book_s_title': book.title,
         'book_s_publisher': book.publisher,
         'book_d_published': book.published,
@@ -48,4 +49,13 @@ def solr_index(sender, instance, created, **kwargs):
         'book_d_updated': book.updated
     }
     solrconn.add(**d)
+    solrconn.commit()
+
+@receiver(post_delete, sender=Book)
+def solr_delete(sender, instance, created, **kwargs):
+    from django.conf import settings
+    import solr
+    solrconn = solr.SolrConnection(settings.SOLR_SERVER)
+    record = solrconn.query("type:goudimel_book book_i_id:{0}".format(instance.id))
+    solrconn.delete(record.results[0]['id'])
     solrconn.commit()

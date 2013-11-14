@@ -17,7 +17,7 @@ class Migration(SchemaMigration):
             ('rism_id', self.gf('django.db.models.fields.CharField')(max_length=16, null=True, blank=True)),
             ('cesr_id', self.gf('django.db.models.fields.CharField')(max_length=16, null=True, blank=True)),
             ('remarks', self.gf('django.db.models.fields.CharField')(max_length=128, null=True, blank=True)),
-            ('num_pages', self.gf('django.db.models.fields.CharField')(max_length=16, null=True, blank=True)),
+            ('num_pages', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
@@ -68,7 +68,7 @@ class Migration(SchemaMigration):
             'cesr_id': ('django.db.models.fields.CharField', [], {'max_length': '16', 'null': 'True', 'blank': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'num_pages': ('django.db.models.fields.CharField', [], {'max_length': '16', 'null': 'True', 'blank': 'True'}),
+            'num_pages': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
             'published': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'publisher': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
             'remarks': ('django.db.models.fields.CharField', [], {'max_length': '128', 'null': 'True', 'blank': 'True'}),
