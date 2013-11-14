@@ -1,0 +1,7 @@
+*.pyc
+
+/app_env
+
+app_env/*
+
+*.sqlite3
