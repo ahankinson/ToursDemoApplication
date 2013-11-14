@@ -111,7 +111,7 @@
        replication is in use, this should match the replication
        configuration.
     -->
-  <dataDir>${solr.data.dir:}</dataDir>
+  <dataDir>/var/db/solr/goudimel-solr</dataDir>
 
 
   <!-- The DirectoryFactory to use for indexes.

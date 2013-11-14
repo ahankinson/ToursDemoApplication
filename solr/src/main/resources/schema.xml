@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<schema name="duchemin-solr" version="1.5">
+<schema name="goudimel-solr" version="1.5">
     <types>
         <!-- field type definitions. The "name" attribute is
            just a label to be used by field definitions.  The "class"
@@ -544,6 +544,8 @@
         <field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>
         <field name="created" type="date" indexed="true" stored="true" />
         <field name="updated" type="date" indexed="true" stored="true" />
+        <field name="item_id" type="string" indexed="true" stored="true" />
+
         <!-- used for book and piece -->
         <field name="title" type="string" indexed="true" stored="true" />
 
@@ -552,15 +554,15 @@
         <field name="published" type="date" indexed="true" stored="true" />
         <field name="rism_id" type="string" indexed="true" stored="true" />
         <field name="cesr_id" type="string" indexed="true" stored="true" />
-        <field name="remarks" type="text" indexed="true" stored="true" />
+        <field name="remarks" type="text_general" indexed="true" stored="true" />
         <field name="num_pages" type="int" indexed="true" stored="true" />
 
         <!-- piece fields -->
         <field name="book_id" type="int" indexed="true" stored="true" />
         <field name="composer_src" type="string" indexed="true" stored="true" />
         <field name="forces" type="string" indexed="true" stored="true" />
-        <field name="print_concordances" indexed="true" stored="true" />
-        <field name="ms_concordances" indexed="true" stored="true" />
+        <field name="print_concordances" type="string" indexed="true" stored="true" />
+        <field name="ms_concordances" type="string" indexed="true" stored="true" />
 
         <!-- phrase fields -->
         <field name="piece_id" type="int" indexed="true" stored="true" />
@@ -568,7 +570,7 @@
         <field name="phrase_start" type="int" indexed="true" stored="true" />
         <field name="phrase_end" type="int" indexed="true" stored="true" />
         <field name="rhyme" type="string" indexed="true" stored="true" />
-        <field name="phrase_text" type="text" indexed="true" stored="true" />
+        <field name="phrase_text" type="text_general" indexed="true" stored="true" />
 
         <!-- copy fields -->
         <dynamicField name="text_fr_*" type="text_fr" indexed="true" stored="true" />
@@ -581,6 +583,6 @@
     </fields>
 
     <uniqueKey>id</uniqueKey>
-    <defaultSearchField>tg_piece_title</defaultSearchField>
+    <defaultSearchField>text</defaultSearchField>
     <solrQueryParser defaultOperator="AND"/>
 </schema>

@@ -2,12 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<!-- This POM template from http://netsuke.wordpress.com/2010/06/24/launching-solr-from-maven-for-rapid-development/ -->
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>edu.haverford.duchemin</groupId>
-	<artifactId>duchemin-solr</artifactId>
+	<groupId>fr.univ-tours.cesr.goudimel</groupId>
+	<artifactId>goudimel-solr</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>Solr Instance for the DuChemin site</name>
-	<url>http://duchemin.haverford.edu</url>
+	<name>Solr Instance for the Goudimel site</name>
+	<url>http://cesr.univ-tours.fr</url>
 
 	<dependencies>
 		<dependency>
@@ -34,7 +34,7 @@
     </dependency>
 	</dependencies>
 	<build>
-		<finalName>duchemin-solr</finalName>
+		<finalName>goudimel-solr</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>

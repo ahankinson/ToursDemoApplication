@@ -28,7 +28,7 @@ def solr_index(sender, instance, created, **kwargs):
     import solr
 
     solrconn = solr.SolrConnection(settings.SOLR_SERVER)
-    record = solrconn.query("type:goudimel_book book_i_id:{0}".format(instance.id))
+    record = solrconn.query("type:goudimel_book item_id:{0}".format(instance.id))
     if record:
         # the record already exists, so we'll remove it first.
         solrconn.delete(record.results[0]['id'])
@@ -37,16 +37,16 @@ def solr_index(sender, instance, created, **kwargs):
     d = {
         'type': 'goudimel_book',
         'id': str(uuid.uuid4()),
-        'book_i_id': book.id,
-        'book_s_title': book.title,
-        'book_s_publisher': book.publisher,
-        'book_d_published': book.published,
-        'book_s_rism_id': book.rism_id,
-        'book_s_cesr_id': book.cesr_id,
-        'book_s_remarks': book.remarks,
-        'book_i_num_pages': book.num_pages,
-        'book_d_created': book.created,
-        'book_d_updated': book.updated
+        'item_id': book.id,
+        'title': book.title,
+        'publisher': book.publisher,
+        'published': book.published,
+        'rism_id': book.rism_id,
+        'cesr_id': book.cesr_id,
+        'remarks': book.remarks,
+        'num_pages': book.num_pages,
+        'created': book.created,
+        'updated': book.updated
     }
     solrconn.add(**d)
     solrconn.commit()
@@ -56,6 +56,6 @@ def solr_delete(sender, instance, created, **kwargs):
     from django.conf import settings
     import solr
     solrconn = solr.SolrConnection(settings.SOLR_SERVER)
-    record = solrconn.query("type:goudimel_book book_i_id:{0}".format(instance.id))
+    record = solrconn.query("type:goudimel_book item_id:{0}".format(instance.id))
     solrconn.delete(record.results[0]['id'])
     solrconn.commit()

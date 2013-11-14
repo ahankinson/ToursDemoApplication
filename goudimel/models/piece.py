@@ -34,7 +34,7 @@ def solr_index(sender, instance, created, **kwargs):
     import solr
 
     solrconn = solr.SolrConnection(settings.SOLR_SERVER)
-    record = solrconn.query("type:goudimel_piece piece_i_id:{0}".format(instance.id))
+    record = solrconn.query("type:goudimel_piece item_id:{0}".format(instance.id))
     if record:
         # the record already exists, so we'll remove it first.
         solrconn.delete(record.results[0]['id'])
@@ -43,15 +43,15 @@ def solr_index(sender, instance, created, **kwargs):
     d = {
         'type': 'goudimel_piece',
         'id': str(uuid.uuid4()),
-        'piece_i_id': piece.id,
-        'piece_s_title': piece.title,
-        'piece_s_composer_src': piece.composer_src,
-        'piece_s_forces': piece.forces,
-        'piece_s_print_concordances': piece.print_concordances,
-        'piece_s_ms_concordances': piece.ms_concordances,
-        'piece_s_pdf_link': piece.pdf_link,
-        'piece_d_created': piece.created,
-        'piece_d_updated': piece.updated
+        'item_id': piece.id,
+        'title': piece.title,
+        'composer_src': piece.composer_src,
+        'forces': piece.forces,
+        'print_concordances': piece.print_concordances,
+        'ms_concordances': piece.ms_concordances,
+        'pdf_link': piece.pdf_link,
+        'created': piece.created,
+        'updated': piece.updated
     }
     solrconn.add(**d)
     solrconn.commit()
@@ -61,6 +61,6 @@ def solr_delete(sender, instance, created, **kwargs):
     from django.conf import settings
     import solr
     solrconn = solr.SolrConnection(settings.SOLR_SERVER)
-    record = solrconn.query("type:goudimel_piece piece_i_id:{0}".format(instance.id))
+    record = solrconn.query("type:goudimel_piece item_id:{0}".format(instance.id))
     solrconn.delete(record.results[0]['id'])
     solrconn.commit()

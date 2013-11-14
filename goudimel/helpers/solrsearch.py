@@ -1,4 +1,4 @@
 
 
 class SolrSearch(object):
-	pass
+    pass
