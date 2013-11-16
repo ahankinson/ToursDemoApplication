@@ -21,17 +21,19 @@ class SearchView(APIView):
     renderer_classes = (JSONRenderer, JSONPRenderer, SearchViewHTMLRenderer)
 
     def get(self, request, *args, **kwargs):
-        query = request.GET.get('q', None)
-        # if we don't have a query parameter, send an empty response
-        # back to the template. It will then present the search page
-        # to the user
-        if not query:
-            return Response({}, status=status.HTTP_200_OK)
+        querydict = request.GET
 
         s = SolrSearch(request)
-        search_results = s.search()
-        facets = s.facets(['publisher', 'composer_src'])
+        facets = s.facets(['publisher', 'composer_src', 'forces'])
 
+        # if we don't have a query parameter, send empty search results
+        # back to the template, but still send along the facets.
+        # It will then present the search page to the user with the facets
+        if not querydict:
+            result = {'results': [], 'facets': facets.facet_counts}
+            return Response(result, status=status.HTTP_200_OK)
+
+        search_results = s.search()
         result = {'results': search_results, 'facets': facets.facet_counts}
         response = Response(result, status=status.HTTP_200_OK)
         return response
