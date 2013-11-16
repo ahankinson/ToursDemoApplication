@@ -21,6 +21,7 @@ class SolrSearch(object):
         facet_params = {
             'facet': 'true',
             'facet_field': facet_fields,
+            'facet_mincount': 1
         }
         self.solr_params.update(facet_params)
         self.solr_params.update(kwargs)
