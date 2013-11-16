@@ -1,7 +1,20 @@
-{% extends "base.html" %}
-
-{% block body %}
-
-<h4>Search Results</h4>
-
-{% endblock %}
+{% if content.results.numFound > 0 %}
+    {% for result in content.results.results %}
+        <div class="row">
+            <div class="search-result">
+                {% if result.type == "goudimel_book" %}
+                    <span class="label label-primary">Book</span>
+                    <a href="/book/{{ result.item_id }}">{{ result.title }}</a>
+                {% elif result.type == "goudimel_phrase" %}
+                    <span class="label label-success">Phrase</span>
+                    <a href="/phrase/{{ result.item_id }}">{{ result.phrase_text }}</a>
+                {% elif result.type == "goudimel_piece" %}
+                    <span class="label label-info">Piece</span>
+                    <a href="/piece/{{ result.item_id }}">{{ result.title }}</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <h5>No Results found</h5>
+{% endif %}

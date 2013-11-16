@@ -563,12 +563,13 @@
         <field name="forces" type="string" indexed="true" stored="true" />
         <field name="print_concordances" type="string" indexed="true" stored="true" />
         <field name="ms_concordances" type="string" indexed="true" stored="true" />
+        <field name="pdf_link" type="string" indexed="true" stored="true" />
 
         <!-- phrase fields -->
         <field name="piece_id" type="int" indexed="true" stored="true" />
         <field name="phrase_num" type="int" indexed="true" stored="true" />
         <field name="phrase_start" type="int" indexed="true" stored="true" />
-        <field name="phrase_end" type="int" indexed="true" stored="true" />
+        <field name="phrase_stop" type="int" indexed="true" stored="true" />
         <field name="rhyme" type="string" indexed="true" stored="true" />
         <field name="phrase_text" type="text_general" indexed="true" stored="true" />
 
@@ -579,6 +580,9 @@
         <copyField source="phrase_text" dest="text_fr_phrase_text" />
         <copyField source="title" dest="text_fr_title" />
         <copyField source="title" dest="text_gen_title" />
+
+        <copyField source="title" dest="text" />
+        <copyField source="publisher" dest="text" />
 
     </fields>
 

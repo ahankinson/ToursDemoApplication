@@ -5,3 +5,5 @@
 app_env/*
 
 *.sqlite3
+
+/solr/target

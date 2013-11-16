@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="row">
+    <div class="col-md-8">
+        <h2>Search</h2>
+        <form id="search-form" action="/search" method="get">
+            <input type="text" name="q" class="search-input" />
+            <button type="submit" class="btn">Search</button>
+        </form>
+
+        {% if content.results %}
+            <h3>Results</h3>
+            {% include "search/search_results.html" %}
+        {% elif content.results.numFound == 0 %}
+            <h3>No Results.</h3>
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <h2>Facets</h2>
+        {% if content.facets %}
+            {% for name, facets in content.facets.facet_fields.items %}
+            <div class="row">
+                <h4>{{ name }}</h4>
+                <ul>
+                {% for facet, count in facets.items %}
+                    <li><a href="#" data-facet-name="{{ name }}" data-facet-value="{{ facet }}">{{ facet }}</a> ({{ count }})</li>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

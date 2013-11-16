@@ -1,0 +1,175 @@
+- model: goudimel.book
+  pk: 1
+  fields:
+    title: Oeuvres Completes, Volume 1
+    publisher: Andrew Hankinson
+    published: 1999-01-01
+    rism_id: 12345
+    cesr_id: 54321
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.book
+  pk: 2
+  fields:
+    title: Oeuvres Completes, Volume 2
+    publisher: Andrew Hankinson
+    published: 1999-02-01
+    rism_id: 87098
+    cesr_id: 09870
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.book
+  pk: 3
+  fields:
+    title: Oeuvres Completes, Volume 3
+    publisher: Andrew Hankinson
+    published: 1999-03-01
+    rism_id: 24532
+    cesr_id: 65543
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.book
+  pk: 4
+  fields:
+    title: Oeuvres Completes, Volume 4
+    publisher: Andrew Hankinson
+    published: 1999-04-01
+    rism_id: 23453
+    cesr_id: 63456
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.piece
+  pk: 1
+  fields:
+    book_id: 1
+    title: Au bord des eaux de la cité païenne (Psalm 137)
+    composer_src: Goudimel, Claude
+    forces: SATB
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.piece
+  pk: 2
+  fields:
+    book_id: 1
+    title: Bonjour, Mon Coeur
+    composer_src: Goudimel, Claude
+    forces: SATB
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.piece
+  pk: 3
+  fields:
+    book_id: 2
+    title: Domine, quid multiplicati sunt
+    composer_src: Goudimel, Claude
+    forces: AATB
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.piece
+  pk: 4
+  fields:
+    book_id: 2
+    title: Esprits divins
+    composer_src: Goudimel, Claude
+    forces: SATB
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.piece
+  pk: 5
+  fields:
+    book_id: 3
+    title: Etans assis aux rives aquatiques
+    composer_src: Goudimel, Claude
+    forces: SATB
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.phrase
+  pk: 1
+  fields:
+    piece_id: 1
+    phrase_num: 1
+    phrase_start: 1
+    phrase_stop: 3
+    phrase_text: DIY four loko slow-carb wolf
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.phrase
+  pk: 2
+  fields:
+    piece_id: 1
+    phrase_num: 2
+    phrase_start: 4
+    phrase_stop: 7
+    phrase_text: Odd Future quinoa fap Carles
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.phrase
+  pk: 3
+  fields:
+    piece_id: 1
+    phrase_num: 3
+    phrase_start: 8
+    phrase_stop: 10
+    phrase_text: Cliche biodiesel occupy polaroid
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.phrase
+  pk: 4
+  fields:
+    piece_id: 2
+    phrase_num: 1
+    phrase_start: 1
+    phrase_stop: 3
+    phrase_text: Umami leggings brunch
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.phrase
+  pk: 5
+  fields:
+    piece_id: 2
+    phrase_num: 2
+    phrase_start: 4
+    phrase_stop: 9
+    phrase_text: Blog flannel small batch pop-up squid
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.phrase
+  pk: 6
+  fields:
+    piece_id: 2
+    phrase_num: 3
+    phrase_start: 10
+    phrase_stop: 15
+    phrase_text: Dreamcatcher viral YOLO ennui pickled butcher
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.phrase
+  pk: 7
+  fields:
+    piece_id: 3
+    phrase_num: 1
+    phrase_start: 1
+    phrase_stop: 3
+    phrase_text: Slow-carb kitsch Odd Future
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.phrase
+  pk: 8
+  fields:
+    piece_id: 3
+    phrase_num: 2
+    phrase_start: 4
+    phrase_stop: 10
+    phrase_text: Marfa butcher locavore Schlitz selfies next level
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500
+- model: goudimel.phrase
+  pk: 9
+  fields:
+    piece_id: 3
+    phrase_num: 3
+    phrase_start: 11
+    phrase_stop: 13
+    phrase_text: Freegan pour-over yr PBR chambray
+    created: 2013-11-16 00:00:00+0500
+    updated: 2013-11-16 00:00:00+0500

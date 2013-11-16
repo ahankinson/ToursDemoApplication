@@ -37,7 +37,6 @@ def solr_index(sender, instance, created, **kwargs):
         'type': 'goudimel_phrase',
         'id': str(uuid.uuid4()),
         'item_id': phrase.id,
-        'piece_id': phrase.piece_id.id,
         'phrase_num': phrase.phrase_num,
         'phrase_start': phrase.phrase_start,
         'phrase_stop': phrase.phrase_stop,
