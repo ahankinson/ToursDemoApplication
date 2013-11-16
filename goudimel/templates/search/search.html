@@ -25,14 +25,38 @@
                 <h4>{{ name }}</h4>
                 <ul>
                 {% for facet, count in facets.items %}
-                    <li><a href="#" data-facet-name="{{ name }}" data-facet-value="{{ facet }}">{{ facet }}</a> ({{ count }})</li>
+                    <li><a class="facet-link" href="#" data-facet-name="{{ name }}" data-facet-value="{{ facet }}">{{ facet }}</a> ({{ count }})</li>
                 {% endfor %}
                 </ul>
             </div>
             {% endfor %}
         {% endif %}
-    </div>
+        <script type="text/javascript">
+            $(".facet-link").on('click', function(event)
+            {
+                var qstr = window.location.search.replace("?", "");
+                var qstr_params = $.parseParams(qstr);
 
+                var facetName = $(this).data('facet-name');
+                var facetValue = $(this).data('facet-value');
+                if (!(facetName in qstr_params))
+                {
+                    var facetQ = facetName + "=" + facetValue;
+                    if (qstr != "")
+                    {
+                        // this makes sure that we either append the 
+                        // querystring to an existing query string
+                        // (with a "&") or we just append it to the
+                        // existing URL.
+                        facetQ = "&" + facetQ;
+                    }
+
+                    window.location.search = qstr + facetQ;
+                }
+                event.preventDefault();
+            })
+        </script>
+    </div>
 </div>
 
 {% endblock %}
