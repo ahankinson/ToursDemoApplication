@@ -17,11 +17,17 @@ urlpatterns += format_suffix_patterns(
 
     url(r'^$', 'home'),
     url(r'^browse/$', 'api_root'),
-    url(r'^book/$', BookList.as_view(), name="books-list"),
+    # these next two are the same view, just one is singular and the other plural
+    url(r'^book/$', BookList.as_view(), name="book-list"),
+    url(r'^books/$', BookList.as_view(), name="books-list"),
     url(r'^book/(?P<pk>[0-9]+)/$', BookDetail.as_view(), name="book-detail"),
-    url(r'^piece/$', PieceList.as_view(), name="pieces-list"),
+
+    url(r'^piece/$', PieceList.as_view(), name="piece-list"),
+    url(r'^pieces/$', PieceList.as_view(), name="pieces-list"),
     url(r'^piece/(?P<pk>[0-9]+)/$', PieceDetail.as_view(), name="piece-detail"),
-    url(r'^phrase/$', PhraseList.as_view(), name="phrases-list"),
+
+    url(r'^phrase/$', PhraseList.as_view(), name="phrase-list"),
+    url(r'^phrases/$', PhraseList.as_view(), name="phrases-list"),
     url(r'^phrase/(?P<pk>[0-9]+)/$', PhraseDetail.as_view(), name="phrase-detail"),
     url(r'^search/$', SearchView.as_view(), name="search-view"),
     # Uncomment the admin/doc line below to enable admin documentation:

@@ -9,7 +9,6 @@ def reindex_in_solr(modeladmin, request, queryset):
     # calls the save method on every item, ensuring the
     # post_save handler is called
     for item in queryset:
-        print(item)
         item.save()
 reindex_in_solr.short_description = "Re-Index Selected Items"
 

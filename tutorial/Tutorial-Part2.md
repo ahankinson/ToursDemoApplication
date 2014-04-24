@@ -226,23 +226,34 @@ While we have three Models in Django, we can't differentiate between records tha
 
 These two fields will be part of every record, no matter what other fields we choose to store in each document.
 
-For our content types, let's start with the book fields. Since we have a combination of number and string fields, we can create a dynamic field to hold these book-specific fields and populate them on the fly. "book_s_*" will represent string fields, "book_d_*" will represent date fields, and "book_i_*" will represent integer fields.
+At this point you should add fields for every piece of data you wish to store from your Django models. As an example, here is what I have for the `Book` model fields:
 
-`<dynamicField name="book_s_*" type="string" indexed="true" stored="true"/>`
-`<dynamicField name="book_d_*" type="date" indexed="true" stored="true"/>`
-`<dynamicField name="book_i_*" type="int" indexed="true" stored="true"/>`
+```
+<field name="publisher" type="string" indexed="true" stored="true"/>
+<field name="published" type="date" indexed="true" stored="true" />
+<field name="rism_id" type="string" indexed="true" stored="true" />
+<field name="cesr_id" type="string" indexed="true" stored="true" />
+<field name="remarks" type="text_general" indexed="true" stored="true" />
+<field name="num_pages" type="int" indexed="true" stored="true" />
+```
 
-Let's do the same for "piece" and "phrase".
+Do this for each of your models.
 
-`<dynamicField name="piece_s_*" type="string" indexed="true" stored="true"/>`
-`<dynamicField name="piece_d_*" type="date" indexed="true" stored="true"/>`
-`<dynamicField name="piece_i_*" type="int" indexed="true" stored="true"/>`
+Using dynamic fields and copy fields we can create extra indexes for the data in your model fields.
 
-`<dynamicField name="phrase_s_*" type="string" indexed="true" stored="true"/>`
-`<dynamicField name="phrase_d_*" type="date" indexed="true" stored="true"/>`
-`<dynamicField name="phrase_i_*" type="int" indexed="true" stored="true"/>`
+```
+<dynamicField name="text_fr_*" type="text_fr" indexed="true" stored="true" />
+<dynamicField name="text_gen_*" type="text_general" indexed="true" stored="true" />
 
-While, technically, we could have just typed fields ("s_*" for string fields) it's sometimes helpful to be able to distinguish between fields for books and pieces in the name.
+<copyField source="phrase_text" dest="text_fr_phrase_text" />
+<copyField source="title" dest="text_fr_title" />
+<copyField source="title" dest="text_gen_title" />
+
+<copyField source="title" dest="text" />
+<copyField source="publisher" dest="text" />
+```
+
+These definitions will automatically copy the contents of one field and re-index it according to the rules defined for the destination field type. This allows you to, for example, search the title field with both English and French stemming rules.
 
 Re-build your Solr instance and check to make sure it is working in Tomcat.
 
@@ -291,7 +302,7 @@ def solr_index(sender, instance, created, **kwargs):
     import solr
 
     solrconn = solr.SolrConnection(settings.SOLR_SERVER)
-    record = solrconn.query("type:goudimel_book title:{0}".format(instance.title))
+    record = solrconn.query("type:goudimel_book item_id:{0}".format(instance.id))
     if record:
         # the record already exists, so we'll remove it first.
         solrconn.delete(record.results[0]['id'])
@@ -300,15 +311,16 @@ def solr_index(sender, instance, created, **kwargs):
     d = {
         'type': 'goudimel_book',
         'id': str(uuid.uuid4()),
-        'book_s_title': book.title,
-        'book_s_publisher': book.publisher,
-        'book_d_published': book.published,
-        'book_s_rism_id': book.rism_id,
-        'book_s_cesr_id': book.cesr_id,
-        'book_s_remarks': book.remarks,
-        'book_i_num_pages': book.num_pages,
-        'book_d_created': book.created,
-        'book_d_updated': book.updated
+        'item_id': book.id,
+        'title': book.title,
+        'publisher': book.publisher,
+        'published': book.published,
+        'rism_id': book.rism_id,
+        'cesr_id': book.cesr_id,
+        'remarks': book.remarks,
+        'num_pages': book.num_pages,
+        'created': book.created,
+        'updated': book.updated
     }
     solrconn.add(**d)
     solrconn.commit()
@@ -326,7 +338,7 @@ The import lines are fairly self-explanatory. Notice that we are importing the `
 
 The next few lines will look for an existing record in our Solr system. If we are creating a new record, chances are it will not exist. However, if we are updating an older record the easiest way to deal with it is to delete the old record and then re-add a new one.
 
-Finally, we index the content. We create a key/value dictionary that contains the Solr field that we want to push content into, and the content from our book instance that is being saved as the value. Notice that the keys in our dictionary match the `dynamicField` pattern that we established in our Solr schema.
+Finally, we index the content. We create a key/value dictionary that contains the Solr field that we want to push content into, and the content from our book instance that is being saved as the value. Notice that the keys in our dictionary match the fields that we established in our Solr schema.
 
 This is concluded by calling `add` to our Solr server to add the document to the Solr server. It uses a Python idiom that you may not be familiar with:
 
@@ -334,11 +346,11 @@ This is concluded by calling `add` to our Solr server to add the document to the
 
 What this call does is expands the keys and values from our dictionary into arguments for the function call. So:
 
-`d = {'book_s_title': "My great book title", "book_d_published": "1501-01-01"}`
+`d = {'title': "My great book title", "published": "1501-01-01"}`
 
 becomes:
 
-`solrconn.add(book_s_title="My great book title", book_d_published="1501-01-01")`
+`solrconn.add(title="My great book title", published="1501-01-01")`
 
 I find it a very handy thing to use.
 
@@ -351,33 +363,33 @@ You should see something like this:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <response>
-
-<lst name="responseHeader">
-  <int name="status">0</int>
-  <int name="QTime">0</int>
-  <lst name="params">
-    <str name="q">*:*</str>
-    <str name="version">2.2</str>
-    <str name="start">0</str>
-    <str name="rows">10</str>
-    <str name="indent">on</str>
-  </lst>
-</lst>
-<result name="response" numFound="1" start="0">
-  <doc>
-    <date name="book_d_created">2013-11-09T15:52:08.224Z</date>
-    <date name="book_d_published">1501-01-10T00:00:00Z</date>
-    <date name="book_d_updated">2013-11-09T15:52:08.225Z</date>
-    <int name="book_i_num_pages">100</int>
-    <str name="book_s_cesr_id">4335232445</str>
-    <str name="book_s_publisher">Andrew Hankinson</str>
-    <str name="book_s_remarks">It's a great book</str>
-    <str name="book_s_rism_id">1234566</str>
-    <str name="book_s_title">My Great Book</str>
-    <str name="id">1370bf18-9754-4615-8fd2-f759563036e9</str>
-    <str name="type">goudimel_book</str>
-  </doc>
-</result>
+    <lst name="responseHeader">
+      <int name="status">0</int>
+      <int name="QTime">1</int>
+      <lst name="params">
+        <str name="q">type:goudimel_book</str>
+        <str name="version">2.2</str>
+        <str name="start">0</str>
+        <str name="rows">10</str>
+        <str name="indent">on</str>
+      </lst>
+    </lst>
+    <result name="response" numFound="4" start="0">
+      <doc>
+        <str name="cesr_id">65543</str>
+        <date name="created">2013-11-15T19:00:00Z</date>
+        <str name="id">dea6ce59-c33a-4b55-a95d-fc734eb130a9</str>
+        <str name="item_id">3</str>
+        <date name="published">1999-03-01T00:00:00Z</date>
+        <str name="publisher">Andrew Hankinson</str>
+        <str name="rism_id">24532</str>
+        <str name="text_fr_title">Oeuvres Completes, Volume 3</str>
+        <str name="text_gen_title">Oeuvres Completes, Volume 3</str>
+        <str name="title">Oeuvres Completes, Volume 3</str>
+        <str name="type">goudimel_book</str>
+        <date name="updated">2013-11-15T19:00:00Z</date>
+      </doc>
+    </result>
 </response>
 ```
 

@@ -6,6 +6,7 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Piece</th>
                 <th>Position</th>
                 <th>Text</th>
             </tr>
@@ -13,6 +14,7 @@
         <tbody>
             {% for phrase in content %}
             <tr>
+                <td><a href="{{ phrase.piece_id.url }}">{{ phrase.piece_id.title }}</a></td>
                 <td>{{ phrase.phrase_num }}</td>
                 <td><a href="{{ phrase.url }}">{{ phrase.phrase_text }}</a></td>
             </tr>
